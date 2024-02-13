@@ -1,0 +1,25 @@
+version: '3'
+services:
+  api:
+    build: ./MONKEY
+    container_name: berry-api
+    ports:
+      - 80:5000
+      - 443:5001
+    networks:
+      - berry-network
+  postgres:
+    image: postgres:14-alpine
+    ports:
+      - 5432:5432
+    volumes:
+      - ~/apps/postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=S3cret
+      - POSTGRES_USER=berry_user
+      - POSTGRES_DB=berry_db
+    networks:
+      - berry-network
+networks:
+  berry-network:
+    driver: bridge
