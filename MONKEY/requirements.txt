@@ -3,5 +3,8 @@ python-dotenv==1.0.1
 redis==5.0.1
 SQLAlchemy==2.0.25
 fastapi
+fastui
 uvicorn
 pydantic
+psycopg2
+requests==2.31.0
