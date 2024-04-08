@@ -3,11 +3,13 @@ services:
   api:
     build: ./MONKEY
     container_name: berry-api
+    restart: always
     ports:
-      - 80:5000
-      - 443:5001
+      - 80:80
     networks:
       - berry-network
+    depends_on:
+      - postgres
   postgres:
     image: postgres:14-alpine
     ports:
@@ -20,6 +22,11 @@ services:
       - POSTGRES_DB=berry_db
     networks:
       - berry-network
+  redis:
+    image: redis/redis-stack
+    ports:
+      - 6379:6379
+      - 8001:8001
 networks:
   berry-network:
     driver: bridge
