@@ -124,4 +124,10 @@ class DataBaseConn:
     def get_comments_by_post(
         self, post: pydantic_post.Post
     ) -> list[pydantic_comment.Comment]:
-        pass
+        comments = self.session.query(sql_models.Comment).filter(
+            sql_models.Comment.linked_submission_id == post.id
+        )
+
+        if len(comments.all()) == 1 and type(comments.all()[0]) is None:
+            return []
+        return [comment.to_pydantic() for comment in comments.all()]

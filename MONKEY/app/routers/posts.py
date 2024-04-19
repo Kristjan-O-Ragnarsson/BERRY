@@ -163,28 +163,50 @@ def read_all_date(start_date: str, end_date: str, select_single: str):
                     ],
                 ),
             ]
-    elif select_single == "both":
+    elif select_single == "Both":
+        elements = []
         posts = db.get_posts_by_date(start_date, end_date)
-        comments = db.get_comments_by_date(start_date, end_date)
+        # comments = db.get_comments_by_date(start_date, end_date)
+        for post in posts:
+            elements.append(
+                c.Link(
+                    components=[c.Text(text=f"{post.id}\n")],
+                    on_click=GoToEvent(url=f"/posts/{post.id}"),
+                )
+            )
+            comments = db.get_comments_by_post(post)
+            for comment in comments:
+                elements.append(
+                    c.Link(
+                        components=[c.Text(text=f"↳ {comment.id}")],
+                        on_click=GoToEvent(url=f"/comments/{comment.id}"),
+                    )
+                )
+            print(f"/posts/{post.id}")
 
     return [
-        c.PageTitle(text=f"TEST"),
-        c.Page(
-            components=[
-                c.Heading(text="Posts", level=2),
-                c.Table(
-                    data=posts,
-                    columns=[
-                        DisplayLookup(
-                            field="id",
-                            on_click=GoToEvent(url="./{id}"),
-                            table_width_percent=10,
-                        ),
-                        DisplayLookup(field="title", table_width_percent=33),
-                        DisplayLookup(field="author", table_width_percent=33),
-                    ],
+        c.PageTitle(text=f"Comments & Post Date Search"),
+        c.Navbar(
+            title="BERRY",
+            title_event=GoToEvent(url="/"),
+            start_links=[
+                c.Link(
+                    components=[c.Text(text="Date")],
+                    on_click=GoToEvent(url="/forms/date"),
+                    active="startswith:/forms/date",
+                ),
+                c.Link(
+                    components=[c.Text(text="Keyword")],
+                    on_click=GoToEvent(url="/forms/keyword"),
+                    active="startswith:/forms/keyword",
                 ),
             ],
+        ),
+        c.Page(
+            components=[
+                c.Heading(text="Posts & Comments", level=2),
+                c.LinkList(links=elements),
+            ]
         ),
     ]
 
@@ -335,6 +357,53 @@ def read_all_keyword(keyword: str, select_single: str):
                     ],
                 ),
             ]
+
+    elif select_single == "Both":
+        elements = []
+        posts, weight = db.get_posts_by_keyword(keywords=keyword.split())
+        # comments = db.get_comments_by_date(start_date, end_date)
+        for post in posts:
+            elements.append(
+                c.Link(
+                    components=[c.Text(text=f"{post.id}\n")],
+                    on_click=GoToEvent(url=f"/posts/{post.id}"),
+                )
+            )
+            comments = db.get_comments_by_post(post)
+            for comment in comments:
+                elements.append(
+                    c.Link(
+                        components=[c.Text(text=f"↳ {comment.id}")],
+                        on_click=GoToEvent(url=f"/comments/{comment.id}"),
+                    )
+                )
+            print(f"/posts/{post.id}")
+
+    return [
+        c.PageTitle(text=f"Comments & Date Search"),
+        c.Navbar(
+            title="BERRY",
+            title_event=GoToEvent(url="/"),
+            start_links=[
+                c.Link(
+                    components=[c.Text(text="Date")],
+                    on_click=GoToEvent(url="/forms/date"),
+                    active="startswith:/forms/date",
+                ),
+                c.Link(
+                    components=[c.Text(text="Keyword")],
+                    on_click=GoToEvent(url="/forms/keyword"),
+                    active="startswith:/forms/keyword",
+                ),
+            ],
+        ),
+        c.Page(
+            components=[
+                c.Heading(text="Posts & Comments", level=2),
+                c.LinkList(links=elements),
+            ]
+        ),
+    ]
 
 
 @router.get(

@@ -21,7 +21,7 @@ app.include_router(forms.router)
 
 @app.on_event("startup")
 async def startup():
-    # sleep(1)
+    sleep(1)
     app.state.db = DataBaseConn(
         "postgresql://berry_user:S3cret@localhost:5432/berry_db"
     )
